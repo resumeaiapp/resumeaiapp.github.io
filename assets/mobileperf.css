@@ -1,0 +1,105 @@
+/* Mobile scroll performance.
+   The design uses four 500px blurred, continuously animated aurora blobs and
+   backdrop-filter "glass" panels. These force expensive repaints on phones and
+   make scrolling stutter. On small screens we drop those effects and keep the
+   same readable solid backgrounds. */
+
+@media (max-width: 767px) {
+  html,
+  body {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+
+  body {
+    overflow-x: clip;
+    touch-action: pan-y;
+  }
+
+  /* Big animated blur layers - the primary source of scroll jank */
+  .aurora {
+    display: none !important;
+  }
+
+  /* backdrop-filter repaints the whole area behind each element while scrolling */
+  .glass,
+  [class*="backdrop-blur"] {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.95) !important;
+  }
+
+  .dark .glass {
+    background: rgba(15, 23, 42, 0.95) !important;
+  }
+
+  /* Decorative infinite float animations */
+  .float-a,
+  .float-b,
+  .float-c,
+  .logo-float,
+  .rise,
+  .rise-1,
+  .rise-2,
+  .rise-3,
+  .rise-4,
+  .rise-5 {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Honour reduced-motion on every screen size */
+@media (prefers-reduced-motion: reduce) {
+  .aurora,
+  .float-a,
+  .float-b,
+  .float-c,
+  .logo-float,
+  .rise,
+  .rise-1,
+  .rise-2,
+  .rise-3,
+  .rise-4,
+  .rise-5 {
+    animation: none !important;
+  }
+}
+
+/* Test hook: add .mobile-perf to <html> to preview the mobile rules on desktop */
+.mobile-perf .aurora {
+  display: none !important;
+}
+
+.mobile-perf .glass,
+.mobile-perf [class*="backdrop-blur"] {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.mobile-perf .glass {
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+.mobile-perf.dark .glass {
+  background: rgba(15, 23, 42, 0.95) !important;
+}
+
+.mobile-perf .float-a,
+.mobile-perf .float-b,
+.mobile-perf .float-c,
+.mobile-perf .logo-float,
+.mobile-perf .rise,
+.mobile-perf .rise-1,
+.mobile-perf .rise-2,
+.mobile-perf .rise-3,
+.mobile-perf .rise-4,
+.mobile-perf .rise-5 {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
