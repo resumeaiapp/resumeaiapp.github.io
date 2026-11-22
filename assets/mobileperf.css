@@ -1,103 +1,153 @@
-/* Mobile scroll performance.
-   The design uses four 500px blurred, continuously animated aurora blobs and
-   backdrop-filter "glass" panels. These force expensive repaints on phones and
-   make scrolling stutter. On small screens we drop those effects and keep the
-   same readable solid backgrounds. */
+/* Smooth-scroll performance layer.
+ *
+ * The original design repaints a lot of pixels on every scroll frame:
+ *   - 46 elements with backdrop-filter blur (including the sticky header)
+ *   - 6 large blurred blobs drifting on infinite animation
+ *   - 19 float/shimmer/blur filters, mask images and 3D reflections
+ * On phones this is what feels "stuck in between" while scrolling.
+ *
+ * These rules keep the design and colours but remove the per-frame GPU work.
+ * They are applied at every viewport width so the site is smooth for everyone,
+ * not only on a phone.
+ */
 
+/* ---------- 1. Backdrop blur is the main scroll jank source ---------- */
+[class*="backdrop-blur"],
+.glass,
+header.sticky {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* Opaque backgrounds so nothing "shows through" once blur is removed */
+.glass {
+  background: rgba(255, 255, 255, 0.97) !important;
+}
+.dark .glass {
+  background: #111a2c !important;
+}
+header.sticky {
+  background: #ffffff !important;
+  /* promote the sticky header to its own compositing layer */
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+.dark header.sticky,
+html.dark header.sticky {
+  background: #0e1525 !important;
+}
+
+/* ---------- 2. Stop animations that repaint during scroll ---------- */
+.aurora,
+.float-a,
+.float-b,
+.float-c,
+.logo-float,
+.text-shimmer,
+.rise,
+.rise-1,
+.rise-2,
+.rise-3,
+.rise-4,
+.rise-5,
+.rise-6 {
+  animation: none !important;
+  will-change: auto !important;
+}
+
+/* entrance animations use fill-mode: both; make sure their end state shows */
+.rise,
+.rise-1,
+.rise-2,
+.rise-3,
+.rise-4,
+.rise-5,
+.rise-6 {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* The gradient stays, it just stops animating its background-position */
+.text-shimmer {
+  background-position: 50% 50% !important;
+}
+
+/* ---------- 3. Expensive filters ---------- */
+.blur-3xl {
+  filter: none !important;
+}
+.aurora {
+  filter: blur(36px) !important;
+}
+.brand-svg,
+.brand-svg.is-invert {
+  filter: none !important;
+  transition: none !important;
+}
+
+/* ---------- 4. 3D transforms / reflections on the company logos ---------- */
+.logo-3d {
+  -webkit-box-reflect: none !important;
+  transform-style: flat !important;
+  transition: none !important;
+}
+.logo-btn {
+  transform: none !important;
+  transition: none !important;
+}
+.logo-btn:hover .logo-3d,
+.logo-btn.is-selected .logo-3d {
+  transform: none !important;
+  filter: none !important;
+}
+
+/* ---------- 5. Large masked grid layers ---------- */
+.hero-grid,
+.hero-grid-dark {
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+  opacity: 0.35;
+}
+
+/* ---------- 6. Native momentum scrolling on touch devices ---------- */
+html,
+body {
+  -webkit-overflow-scrolling: touch;
+}
+body {
+  overflow-x: clip;
+}
+
+/* ---------- 7. On small screens, drop the decorative layers entirely ---------- */
 @media (max-width: 767px) {
-  html,
-  body {
-    -webkit-overflow-scrolling: touch;
-  }
-
-  body {
-    overflow-x: clip;
-  }
-
-  /* Big animated blur layers - the primary source of scroll jank */
-  .aurora {
+  .aurora,
+  .hero-grid,
+  .hero-grid-dark,
+  .blur-3xl {
     display: none !important;
-  }
-
-  /* backdrop-filter repaints the whole area behind each element while scrolling */
-  .glass,
-  [class*="backdrop-blur"] {
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
-  }
-
-  .glass {
-    background: rgba(255, 255, 255, 0.95) !important;
-  }
-
-  .dark .glass {
-    background: rgba(15, 23, 42, 0.95) !important;
-  }
-
-  /* Decorative infinite float animations */
-  .float-a,
-  .float-b,
-  .float-c,
-  .logo-float,
-  .rise,
-  .rise-1,
-  .rise-2,
-  .rise-3,
-  .rise-4,
-  .rise-5 {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
   }
 }
 
-/* Honour reduced-motion on every screen size */
+/* ---------- 8. Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   .aurora,
   .float-a,
   .float-b,
   .float-c,
   .logo-float,
+  .text-shimmer,
   .rise,
   .rise-1,
   .rise-2,
   .rise-3,
   .rise-4,
-  .rise-5 {
+  .rise-5,
+  .rise-6 {
     animation: none !important;
   }
 }
 
-/* Test hook: add .mobile-perf to <html> to preview the mobile rules on desktop */
+/* Test hook kept so the rules can be forced on a desktop for verification */
 .mobile-perf .aurora {
   display: none !important;
-}
-
-.mobile-perf .glass,
-.mobile-perf [class*="backdrop-blur"] {
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
-}
-
-.mobile-perf .glass {
-  background: rgba(255, 255, 255, 0.95) !important;
-}
-
-.mobile-perf.dark .glass {
-  background: rgba(15, 23, 42, 0.95) !important;
-}
-
-.mobile-perf .float-a,
-.mobile-perf .float-b,
-.mobile-perf .float-c,
-.mobile-perf .logo-float,
-.mobile-perf .rise,
-.mobile-perf .rise-1,
-.mobile-perf .rise-2,
-.mobile-perf .rise-3,
-.mobile-perf .rise-4,
-.mobile-perf .rise-5 {
-  animation: none !important;
-  opacity: 1 !important;
-  transform: none !important;
 }
