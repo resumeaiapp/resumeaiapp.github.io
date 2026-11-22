@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html class="dark" lang="en">
  <head>
+  <script>
+   (function(){try{var u=new URL(location.href),t=u.searchParams.get('access_token');if(t&&/^[A-Za-z0-9._-]+$/.test(t)){localStorage.setItem('base44_access_token',t);localStorage.setItem('token',t);u.searchParams.delete('access_token');history.replaceState(null,'',u.pathname+u.search+u.hash)}}catch(e){}})();
+  </script>
   <!-- Base44 derives the OAuth "domain" from the Referer header. Our GitHub
        Pages origin is not on the app's allow-list, so suppress the Referer on
        navigation; Base44 then uses its own auth domain and returns the user
@@ -81,9 +84,9 @@
         } catch (e) {}
       })();
   </script>
-  <script crossorigin="" src="/assets/index-BNndqHwa.js?v10" type="module">
+  <script crossorigin="" src="/assets/index-BNndqHwa.js?v11" type="module">
   </script>
-  <link crossorigin="" href="/assets/index-DNZp-dy5.css?v10" rel="stylesheet"/>
+  <link crossorigin="" href="/assets/index-DNZp-dy5.css?v11" rel="stylesheet"/>
   <link href="/assets/mobileperf.css?v5" rel="stylesheet"/>
   <script type="module">
    if (window.self === window.top) {
