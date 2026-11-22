@@ -2,7 +2,30 @@
 <html class="dark" lang="en">
  <head>
   <script>
-   (function(){try{var u=new URL(location.href),t=u.searchParams.get('access_token');if(t&&/^[A-Za-z0-9._-]+$/.test(t)){localStorage.setItem('base44_access_token',t);localStorage.setItem('token',t);u.searchParams.delete('access_token');history.replaceState(null,'',u.pathname+u.search+u.hash)}}catch(e){}})();
+   (function () {
+     var BUNDLE = '/assets/index-BNndqHwa.js?v12';
+     var ME = 'https://resume-ai-copy-2dde0a01.base44.app/api/apps/6ad880eb780ab04c2dde0a01/entities/User/me';
+     function start() {
+       var s = document.createElement('script');
+       s.type = 'module'; s.crossOrigin = ''; s.src = BUNDLE;
+       document.head.appendChild(s);
+     }
+     try {
+       var u = new URL(location.href), t = u.searchParams.get('access_token');
+       if (!t || !/^[A-Za-z0-9._-]+$/.test(t)) { start(); return; }
+       u.searchParams.delete('access_token');
+       history.replaceState(null, '', u.pathname + u.search + u.hash);
+       fetch(ME, { headers: { Authorization: 'Bearer ' + t }, credentials: 'omit' })
+         .then(function (r) { if (!r.ok) throw new Error('invalid token'); return r.json(); })
+         .then(function (me) {
+           if (!me || !me.id) throw new Error('invalid user');
+           localStorage.setItem('base44_access_token', t);
+           localStorage.setItem('token', t);
+         })
+         .catch(function () { /* never store an unverified token */ })
+         .then(start, start);
+     } catch (e) { start(); }
+   })();
   </script>
   <!-- Base44 derives the OAuth "domain" from the Referer header. Our GitHub
        Pages origin is not on the app's allow-list, so suppress the Referer on
@@ -84,9 +107,7 @@
         } catch (e) {}
       })();
   </script>
-  <script crossorigin="" src="/assets/index-BNndqHwa.js?v11" type="module">
-  </script>
-  <link crossorigin="" href="/assets/index-DNZp-dy5.css?v11" rel="stylesheet"/>
+  <link crossorigin="" href="/assets/index-DNZp-dy5.css?v12" rel="stylesheet"/>
   <link href="/assets/mobileperf.css?v5" rel="stylesheet"/>
   <script type="module">
    if (window.self === window.top) {
