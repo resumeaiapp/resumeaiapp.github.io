@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html class="dark" lang="en">
  <head>
+  <!-- Base44 derives the OAuth "domain" from the Referer header. Our GitHub
+       Pages origin is not on the app's allow-list, so suppress the Referer on
+       navigation; Base44 then uses its own auth domain and returns the user
+       here via from_url. -->
+  <meta content="no-referrer" name="referrer"/>
   <script>
    (function(){var o=Storage.prototype.removeItem;Storage.prototype.removeItem=function(k){if(k==='base44_access_token'){try{var t=this.getItem(k);t&&(document.cookie='base44_sign_out_token='+encodeURIComponent(t)+';path=/api/apps/auth/logout;max-age=60'+(location.protocol!=='https:'?';SameSite=Strict':window.top!==window.self?';SameSite=None;Secure;Partitioned':';SameSite=Strict;Secure'))}catch(e){}}return o.call(this,k)}})();
   </script>
@@ -76,10 +81,10 @@
         } catch (e) {}
       })();
   </script>
-  <script crossorigin="" src="/assets/index-BNndqHwa.js?v8" type="module">
+  <script crossorigin="" src="/assets/index-BNndqHwa.js?v9" type="module">
   </script>
-  <link crossorigin="" href="/assets/index-DNZp-dy5.css?v8" rel="stylesheet"/>
-  <link href="/assets/mobileperf.css?v4" rel="stylesheet"/>
+  <link crossorigin="" href="/assets/index-DNZp-dy5.css?v9" rel="stylesheet"/>
+  <link href="/assets/mobileperf.css?v5" rel="stylesheet"/>
   <script type="module">
    if (window.self === window.top) {
   let lastPath = "";
